@@ -1,0 +1,519 @@
+:root {
+  color-scheme: light;
+  --bg: #f5f3ee;
+  --surface: #ffffff;
+  --ink: #14161b;
+  --muted: #686d79;
+  --line: #e3dfd5;
+  --drop: #0b8457;
+  --drop-bg: #0b845722;
+  --rise: #c5362c;
+  --rise-bg: #c5362c22;
+  --accent: #5a48f5;
+  --accent-bg: #5a48f514;
+  --warn: #b7791f;
+  --iris: linear-gradient(135deg, #ff8ad8, #8f7bff 50%, #4fd8ff);
+  --sans: 'Geist', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --serif: 'Instrument Serif', Georgia, serif;
+  --mono: 'Geist Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    color-scheme: dark;
+    --bg: #0b0d12;
+    --surface: #131720;
+    --ink: #eceef4;
+    --muted: #8a90a0;
+    --line: #232937;
+    --drop: #3ddc97;
+    --drop-bg: #3ddc9726;
+    --rise: #ff7468;
+    --rise-bg: #ff746826;
+    --accent: #a394ff;
+    --accent-bg: #a394ff1c;
+    --warn: #f0b429;
+  }
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #0b0d12;
+  --surface: #131720;
+  --ink: #eceef4;
+  --muted: #8a90a0;
+  --line: #232937;
+  --drop: #3ddc97;
+  --drop-bg: #3ddc9726;
+  --rise: #ff7468;
+  --rise-bg: #ff746826;
+  --accent: #a394ff;
+  --accent-bg: #a394ff1c;
+  --warn: #f0b429;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 15px/1.5 var(--sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+.topbar,
+main,
+.footer {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* Barra do topo */
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: inherit;
+  text-decoration: none;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.bubble {
+  position: relative;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--iris);
+  /* anel: recorta o miolo do gradiente */
+  mask: radial-gradient(circle, transparent 7px, #000 7.5px);
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--warn);
+  animation: pulse 1s ease-in-out infinite;
+}
+
+.status.open .dot {
+  background: var(--drop);
+  animation-duration: 2.4s;
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.3;
+  }
+}
+
+.theme {
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+/* Abertura e números */
+
+.hero {
+  padding: 40px 0 28px;
+}
+
+.hero h1 {
+  margin: 0;
+  font: 400 clamp(40px, 7vw, 76px) / 1 var(--serif);
+  letter-spacing: -0.02em;
+}
+
+.hero h1 em {
+  background: var(--iris);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  padding-right: 0.08em; /* o itálico não corta no fim */
+}
+
+.hero p {
+  max-width: 56ch;
+  margin: 16px 0 0;
+  color: var(--muted);
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  margin: 32px 0 0;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface);
+}
+
+.stats > div {
+  padding: 16px 20px;
+  border-left: 1px solid var(--line);
+}
+
+.stats > div:first-child {
+  border-left: 0;
+}
+
+.stats dt {
+  color: var(--muted);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.stats dd {
+  margin: 4px 0 0;
+  font: 500 26px/1.2 var(--mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+.stats .drop dd {
+  color: var(--drop);
+}
+
+.stats .rise dd {
+  color: var(--rise);
+}
+
+/* Seção ao vivo */
+
+.live {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 20px;
+  align-items: start;
+}
+
+.panel {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface);
+  overflow: hidden;
+}
+
+.panel > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--line);
+}
+
+.panel h2 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.empty {
+  margin: 0;
+  padding: 32px 20px;
+  color: var(--muted);
+  text-align: center;
+}
+
+.price,
+.delta {
+  font-family: var(--mono);
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+
+.price + .delta {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.drop .delta,
+.drop .feed-mark {
+  color: var(--drop);
+}
+
+.rise .delta,
+.rise .feed-mark {
+  color: var(--rise);
+}
+
+.lowest-chip {
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: var(--accent-bg);
+  box-shadow: inset 0 0 0 1px var(--accent);
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* Tabela produto x loja */
+
+.prices {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.prices thead th {
+  padding: 10px 8px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 500;
+  text-align: right;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.prices th:first-child {
+  padding-left: 20px;
+  text-align: left;
+}
+
+.prices tbody th {
+  font-weight: 500;
+}
+
+.prices tbody tr {
+  border-top: 1px solid var(--line);
+}
+
+.prices td {
+  padding: 6px 4px;
+}
+
+.prices td:last-child {
+  padding-right: 12px;
+}
+
+.cell {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  padding: 4px 8px;
+  border-radius: 8px;
+  white-space: pre;
+}
+
+.cell.lowest {
+  background: var(--accent-bg);
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+
+.cell.lowest .price {
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.cell.drop {
+  animation: flash-drop 1.6s ease-out;
+}
+
+.cell.rise {
+  animation: flash-rise 1.6s ease-out;
+}
+
+@keyframes flash-drop {
+  0%,
+  25% {
+    background: var(--drop-bg);
+    box-shadow: inset 0 0 0 1px var(--drop);
+  }
+}
+
+@keyframes flash-rise {
+  0%,
+  25% {
+    background: var(--rise-bg);
+    box-shadow: inset 0 0 0 1px var(--rise);
+  }
+}
+
+/* Feed */
+
+.feed {
+  max-height: 560px;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  overflow-anchor: none;
+  list-style: none;
+}
+
+.feed li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 20px;
+  border-top: 1px solid var(--line);
+  animation: feed-in 0.35s ease-out;
+}
+
+.feed li:first-child {
+  border-top: 0;
+}
+
+@keyframes feed-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+.feed-mark {
+  font-size: 11px;
+}
+
+.feed-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.feed-body strong {
+  overflow: hidden;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.feed-meta {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.feed-price {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.footer {
+  padding: 32px 24px 40px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dot,
+  .feed li {
+    animation: none;
+  }
+}
+
+/* Tablet: feed embaixo */
+
+@media (max-width: 1100px) {
+  .live {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .feed {
+    max-height: 420px;
+  }
+}
+
+/* Celular: cada produto vira um cartão com as lojas em grade */
+
+@media (max-width: 640px) {
+  .topbar,
+  main {
+    padding: 0 16px;
+  }
+
+  .hero {
+    padding-top: 24px;
+  }
+
+  .stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .stats > div:nth-child(odd) {
+    border-left: 0;
+  }
+
+  .stats > div:nth-child(n + 3) {
+    border-top: 1px solid var(--line);
+  }
+
+  .stats dd {
+    font-size: 22px;
+  }
+
+  .prices thead {
+    display: none;
+  }
+
+  .prices tbody tr {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    padding: 12px;
+  }
+
+  .prices tbody th:first-child {
+    grid-column: 1 / -1;
+    padding: 0 8px;
+    text-align: left;
+  }
+
+  .prices td,
+  .prices td:last-child {
+    padding: 0;
+  }
+
+  .prices td::before {
+    content: attr(data-store);
+    display: block;
+    padding: 0 8px;
+    color: var(--muted);
+    font-size: 11px;
+  }
+
+  .cell {
+    align-items: flex-start;
+  }
+
+  .feed li {
+    padding: 10px 16px;
+  }
+}
