@@ -7,7 +7,10 @@ const percent = new Intl.NumberFormat('pt-BR', {
 
 export const formatPrice = (price: string) => brl.format(Number(price))
 
-export const formatDelta = (oldPrice: string, newPrice: string) =>
-  percent.format((Number(newPrice) - Number(oldPrice)) / Number(oldPrice))
+export const formatDelta = (from: string, to: string) =>
+  percent.format((Number(to) - Number(from)) / Number(from))
+
+export const formatNumber = (value: string | number, digits = 0) =>
+  Number(value).toLocaleString('pt-BR', { minimumFractionDigits: digits, maximumFractionDigits: digits })
 
 export const formatTime = (iso: string) => new Date(iso).toLocaleTimeString('pt-BR')

@@ -1,11 +1,12 @@
-import { isDrop, type PricesState } from '../data/prices'
+import { lastEventOf, type LiveState } from '../data/live'
 import { formatDelta, formatPrice } from '../format'
 
-export function PriceTable({ prices }: { prices: PricesState }) {
-  const stores = [...new Set(prices.products.map((p) => p.store))].sort()
-  const names = [...new Set(prices.products.map((p) => p.name))].sort()
+export function PriceTable({ live }: { live: LiveState }) {
+  if (!live.items.prices) return <p className="empty">Aguardando o snapshot do servidor…</p>
 
-  if (!prices.ready) return <p className="empty">Aguardando o snapshot do servidor…</p>
+  const products = Object.values(live.items.prices)
+  const stores = [...new Set(products.map((p) => p.store))].sort()
+  const names = [...new Set(products.map((p) => p.name))].sort()
 
   return (
     <table className="prices">
@@ -21,7 +22,7 @@ export function PriceTable({ prices }: { prices: PricesState }) {
       </thead>
       <tbody>
         {names.map((name) => {
-          const row = prices.products.filter((p) => p.name === name)
+          const row = products.filter((p) => p.name === name)
           const lowest = Math.min(...row.map((p) => Number(p.price)))
           return (
             <tr key={name}>
@@ -29,20 +30,20 @@ export function PriceTable({ prices }: { prices: PricesState }) {
               {stores.map((store) => {
                 const product = row.find((p) => p.store === store)
                 if (!product) return <td key={store} data-store={store} />
-                const change = prices.lastChange[product.id]
-                const direction = change ? (isDrop(change) ? 'drop' : 'rise') : ''
+                const event = lastEventOf(live, 'prices', product.id)
+                const before = event?.previous?.price
+                // preço caindo é bom para quem compra
+                const tone = before ? (Number(product.price) < Number(before) ? 'good' : 'bad') : ''
                 return (
                   <td key={store} data-store={store}>
                     {/* key = id do evento: remonta e reinicia a animação a cada mudança */}
                     <div
-                      key={change?.id}
-                      className={`cell ${direction} ${Number(product.price) === lowest ? 'lowest' : ''}`}
+                      key={event?.id}
+                      className={`cell ${tone} ${Number(product.price) === lowest ? 'lowest' : ''}`}
                     >
                       <span className="price">{formatPrice(product.price)}</span>
                       <span className="delta">
-                        {change
-                          ? `${direction === 'drop' ? '▼' : '▲'} ${formatDelta(change.oldPrice, change.newPrice)}`
-                          : ' '}
+                        {before ? `${tone === 'good' ? '▼' : '▲'} ${formatDelta(before, product.price)}` : ' '}
                       </span>
                     </div>
                   </td>

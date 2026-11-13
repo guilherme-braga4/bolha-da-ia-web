@@ -1,25 +1,25 @@
-import { isDrop, type PriceChange } from '../data/prices'
+import type { LiveEvent } from '../data/live'
 import { formatDelta, formatPrice, formatTime } from '../format'
 
-export function ChangeFeed({ feed }: { feed: PriceChange[] }) {
+export function ChangeFeed({ feed }: { feed: LiveEvent<'prices'>[] }) {
   if (feed.length === 0) return <p className="empty">Nenhuma mudança recebida ainda.</p>
 
   return (
     <ol className="feed">
-      {feed.map((change) => {
-        const direction = isDrop(change) ? 'drop' : 'rise'
+      {feed.map(({ id, item, previous, at }) => {
+        const drop = previous !== null && Number(item.price) < Number(previous.price)
         return (
-          <li key={change.id} className={direction}>
-            <span className="feed-mark">{direction === 'drop' ? '▼' : '▲'}</span>
+          <li key={id} className={drop ? 'good' : 'bad'}>
+            <span className="feed-mark">{drop ? '▼' : '▲'}</span>
             <div className="feed-body">
-              <strong>{change.name}</strong>
+              <strong>{item.name}</strong>
               <span className="feed-meta">
-                {change.store} · {formatTime(change.changedAt)}
+                {item.store} · {formatTime(at)}
               </span>
             </div>
             <div className="feed-price">
-              <span className="price">{formatPrice(change.newPrice)}</span>
-              <span className="delta">{formatDelta(change.oldPrice, change.newPrice)}</span>
+              <span className="price">{formatPrice(item.price)}</span>
+              <span className="delta">{previous ? formatDelta(previous.price, item.price) : 'novo'}</span>
             </div>
           </li>
         )
